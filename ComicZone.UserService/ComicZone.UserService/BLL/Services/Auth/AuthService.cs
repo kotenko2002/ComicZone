@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Ardalis.Result;
 
 namespace ComicZone.UserService.BLL.Services.Auth
 {
@@ -22,12 +23,14 @@ namespace ComicZone.UserService.BLL.Services.Auth
             _userManager = userManager;
         }
 
-        public async Task RegisterAsync(RegisterRequest request)
+        public async Task<Result> RegisterAsync(RegisterRequest request)
         {
             User existsUser = await _userManager.FindByNameAsync(request.Username);
             if (existsUser != null)
             {
-                throw new Exception($"Запис з користувацьмис ім'ям {request.Username} вже існує!");
+                return Result.Invalid(new List<ValidationError> {
+                    new ValidationError($"A user with the name {request.Username} already exists!")
+                });
             }
 
             var user = new User()
@@ -39,23 +42,25 @@ namespace ComicZone.UserService.BLL.Services.Auth
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
-                string message = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception(message);
+                return Result.Invalid(result.Errors.Select(e => new ValidationError(e.Description)).ToList());
             }
+
+            return Result.Success();
         }
 
-        public async Task<string> LoginAsync(LoginRequest request)
+        public async Task<Result<string>> LoginAsync(LoginRequest request)
         {
             User user = await _userManager.FindByNameAsync(request.Username);
             if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                throw new Exception("Неправильне користувацьке ім'я або пароль");
+                return Result.Unauthorized("Incorrect username or password");
             }
 
             IList<string> userRoles = await _userManager.GetRolesAsync(user);
 
             var authClaims = new List<Claim>
             {
+                //new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim("userId", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
@@ -63,7 +68,7 @@ namespace ComicZone.UserService.BLL.Services.Auth
 
             JwtSecurityToken accessToken = GenerateAccessToken(authClaims);
 
-            return new JwtSecurityTokenHandler().WriteToken(accessToken);
+            return Result.Success(new JwtSecurityTokenHandler().WriteToken(accessToken));
         }
 
         private JwtSecurityToken GenerateAccessToken(List<Claim> authClaims)

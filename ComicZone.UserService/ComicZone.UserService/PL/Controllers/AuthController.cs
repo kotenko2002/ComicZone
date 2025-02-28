@@ -2,6 +2,11 @@
 using ComicZone.UserService.PL.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
 
+using Ardalis.Result;
+using ComicZone.UserService.BLL.Services.Auth;
+using ComicZone.UserService.PL.Models.Auth;
+using Microsoft.AspNetCore.Mvc;
+
 namespace ComicZone.UserService.PL.Controllers
 {
     [ApiController, Route("auth")]
@@ -17,17 +22,21 @@ namespace ComicZone.UserService.PL.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            await _authService.RegisterAsync(request);
+            var result = await _authService.RegisterAsync(request);
 
-            return Ok("Реєстрація пройшла успішно!");
+            return result.IsSuccess
+                ? Ok("Реєстрація пройшла успішно!")
+                : BadRequest(new { result.Errors });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            string accessToken = await _authService.LoginAsync(request);
+            var result = await _authService.LoginAsync(request);
 
-            return Ok(accessToken);
+            return result.IsSuccess
+                ? Ok(result.Value)
+                : Unauthorized(new { result.Errors });
         }
     }
 }
