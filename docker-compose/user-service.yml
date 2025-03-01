@@ -1,0 +1,32 @@
+version: '3.5'
+services:
+  userservice:
+    image: userservice
+    container_name: userservice
+    ports: 
+      - 5000:5000
+    restart: unless-stopped
+    depends_on:
+      - userservice-db
+    networks:
+      - userservice-network
+  userservice-db:
+    image: postgres
+    container_name: userservice-db
+    ports:
+      - 5440:5432
+    environment:
+      - POSTGRES_PASSWORD=Qwe123!
+    volumes:
+      - userservice_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - userservice-network
+
+networks:
+  userservice-network:
+    name: userservice-network
+    driver: bridge
+
+volumes:
+  userservice_db_data:
