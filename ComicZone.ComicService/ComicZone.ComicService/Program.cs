@@ -28,7 +28,10 @@ namespace ComicZone.ComicService
             InitAutoMigration(app);
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
 
             app.Run();

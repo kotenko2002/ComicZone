@@ -2,11 +2,6 @@
 using ComicZone.UserService.PL.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-using Ardalis.Result;
-using ComicZone.UserService.BLL.Services.Auth;
-using ComicZone.UserService.PL.Models.Auth;
-using Microsoft.AspNetCore.Mvc;
-
 namespace ComicZone.UserService.PL.Controllers
 {
     [ApiController, Route("auth")]

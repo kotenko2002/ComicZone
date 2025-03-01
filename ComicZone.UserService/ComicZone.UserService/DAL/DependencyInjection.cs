@@ -21,7 +21,7 @@ namespace ComicZone.UserService.DAL
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

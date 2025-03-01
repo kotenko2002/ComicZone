@@ -28,9 +28,7 @@ namespace ComicZone.UserService.BLL.Services.Auth
             User existsUser = await _userManager.FindByNameAsync(request.Username);
             if (existsUser != null)
             {
-                return Result.Invalid(new List<ValidationError> {
-                    new ValidationError($"A user with the name {request.Username} already exists!")
-                });
+                return Result.Conflict($"A user with the name {request.Username} already exists!");
             }
 
             var user = new User()
@@ -42,7 +40,7 @@ namespace ComicZone.UserService.BLL.Services.Auth
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
-                return Result.Invalid(result.Errors.Select(e => new ValidationError(e.Description)).ToList());
+                return Result.Error(new ErrorList(result.Errors.Select(e => e.Description)));
             }
 
             return Result.Success();
@@ -60,7 +58,6 @@ namespace ComicZone.UserService.BLL.Services.Auth
 
             var authClaims = new List<Claim>
             {
-                //new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim("userId", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
