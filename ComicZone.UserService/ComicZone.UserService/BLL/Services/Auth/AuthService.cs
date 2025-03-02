@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Ardalis.Result;
+using ComicZone.UserService.BLL.Messaging.Publishers;
+using ComicZone.UserService.BLL.Messaging.Events;
 
 namespace ComicZone.UserService.BLL.Services.Auth
 {
@@ -14,13 +16,16 @@ namespace ComicZone.UserService.BLL.Services.Auth
     {
         private readonly JwtConfig _config;
         private readonly UserManager<User> _userManager;
+        private readonly IUserEventPublisher _userEventPublisher;
 
         public AuthService(
             IOptions<JwtConfig> jwtOptions,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            IUserEventPublisher userEventPublisher)
         {
             _config = jwtOptions.Value;
             _userManager = userManager;
+            _userEventPublisher = userEventPublisher;
         }
 
         public async Task<Result> RegisterAsync(RegisterRequest request)
@@ -42,6 +47,16 @@ namespace ComicZone.UserService.BLL.Services.Auth
             {
                 return Result.Error(new ErrorList(result.Errors.Select(e => e.Description)));
             }
+
+            var userCreatedEvent = new UserCreatedEvent
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                AvatarUrl = null, // temp
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _userEventPublisher.PublishUserCreatedAsync(userCreatedEvent);
 
             return Result.Success();
         }

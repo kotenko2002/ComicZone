@@ -1,4 +1,6 @@
-﻿using ComicZone.UserService.BLL.Services.Auth;
+﻿using ComicZone.UserService.BLL.Messaging;
+using ComicZone.UserService.BLL.Messaging.Publishers;
+using ComicZone.UserService.BLL.Services.Auth;
 
 namespace ComicZone.UserService.BLL
 {
@@ -10,6 +12,7 @@ namespace ComicZone.UserService.BLL
         )
         {
             return services
+                .AddMessaging(configuration)
                 .AddAuthService(configuration);
         }
 
@@ -21,6 +24,16 @@ namespace ComicZone.UserService.BLL
             return services
                 .AddScoped<IAuthService, AuthService>()
                 .Configure<JwtConfig>(configuration.GetSection("Jwt"));
+        }
+
+        public static IServiceCollection AddMessaging(
+           this IServiceCollection services,
+           IConfiguration configuration
+        )
+        {
+            return services
+                .AddScoped<IUserEventPublisher, UserEventPublisher>()
+                .Configure<RabbitMqConfig>(configuration.GetSection("RabbitMQ"));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ComicZone.UserService.PL.Controllers
             var result = await _authService.RegisterAsync(request);
 
             return result.IsSuccess
-                ? Ok("Реєстрація пройшла успішно!")
+                ? Ok("Registration was successful")
                 : BadRequest(new { result.Errors });
         }
 

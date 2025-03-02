@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     depends_on:
       - userservice-db
-    networks:
-      - userservice-network
+    # networks:
+    #   - userservice-network
   userservice-db:
     image: postgres
     container_name: userservice-db
@@ -20,13 +20,13 @@ services:
     volumes:
       - userservice_db_data:/var/lib/postgresql/data
     restart: unless-stopped
-    networks:
-      - userservice-network
+    # networks:
+    #   - userservice-network
 
-networks:
-  userservice-network:
-    name: userservice-network
-    driver: bridge
+# networks:
+#   userservice-network:
+#     name: userservice-network
+#     driver: bridge
 
 volumes:
   userservice_db_data:

@@ -6,7 +6,7 @@ To launch the entire system, use the following command:
 
 ```sh
 cd ./docker-compose
-docker-compose --project-name comiczone -f ./file-storage.yml -f ./comic-service.yml -f ./user-service.yml up -d
+docker-compose --project-name comiczone -f ./file-storage.yml -f ./broker.yml -f ./comic-service.yml -f ./user-service.yml up -d
 ```
 
 ## 📌 Description
