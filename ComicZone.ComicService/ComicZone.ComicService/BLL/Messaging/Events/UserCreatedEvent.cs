@@ -1,10 +1,10 @@
-﻿namespace ComicZone.ComicService.DAL.Users
+﻿namespace ComicZone.ComicService.BLL.Messaging.Events
 {
-    public class CachedUser
+    public class UserCreatedEvent
     {
         public int Id { get; set; }
         public string Username { get; set; }
         public string AvatarUrl { get; set; }
-        public DateTime CachedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
