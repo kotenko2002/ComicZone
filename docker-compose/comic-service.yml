@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     depends_on:
       - comicservice-db
-    networks:
-      - comicservice-network
+    # networks:
+    #   - comicservice-network
   comicservice-db:
     image: postgres
     container_name: comicservice-db
@@ -20,13 +20,13 @@ services:
     volumes:
       - comicservice_db_data:/var/lib/postgresql/data
     restart: unless-stopped
-    networks:
-      - comicservice-network
+    # networks:
+    #   - comicservice-network
 
-networks:
-  comicservice-network:
-    name: comicservice-network
-    driver: bridge
+# networks:
+#   comicservice-network:
+#     name: comicservice-network
+#     driver: bridge
 
 volumes:
   comicservice_db_data:

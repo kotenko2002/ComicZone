@@ -1,4 +1,5 @@
 ﻿using ComicZone.ComicService.DAL.Common;
+using ComicZone.ComicService.DAL.Uow;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComicZone.ComicService.DAL
@@ -11,7 +12,8 @@ namespace ComicZone.ComicService.DAL
         )
         {
             return services
-                .AddDbContext(configuration);
+                .AddDbContext(configuration)
+                .AddScoped<IUnitOfWork, UnitOfWork>(); ;
         }
 
         private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)

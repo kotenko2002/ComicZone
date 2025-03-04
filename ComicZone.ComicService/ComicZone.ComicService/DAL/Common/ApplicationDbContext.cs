@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ComicZone.ComicService.DAL.Users;
+using ComicZone.ComicService.DAL.Entities;
 
 namespace ComicZone.ComicService.DAL.Common
 {

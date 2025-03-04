@@ -1,4 +1,4 @@
-﻿namespace ComicZone.ComicService.DAL.Users
+﻿namespace ComicZone.ComicService.DAL.Entities
 {
     public class Comic
     {

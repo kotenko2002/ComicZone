@@ -4,6 +4,8 @@ using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 using ComicZone.ComicService.BLL.Messaging.Events;
+using ComicZone.ComicService.DAL.Uow;
+using ComicZone.ComicService.DAL.Entities;
 
 namespace ComicZone.ComicService.BLL.Messaging.Consumers
 {
@@ -15,12 +17,18 @@ namespace ComicZone.ComicService.BLL.Messaging.Consumers
 
         private readonly RabbitMqConfig _config;
         private readonly ILogger<UserCreatedConsumer> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
+
         private const string QueueName = "user-created-queue";
 
-        public UserCreatedConsumer(IOptions<RabbitMqConfig> options, ILogger<UserCreatedConsumer> logger)
+        public UserCreatedConsumer(
+            IOptions<RabbitMqConfig> options,
+            ILogger<UserCreatedConsumer> logger,
+            IServiceScopeFactory scopeFactory)
         {
             _config = options.Value;
             _logger = logger;
+            _scopeFactory = scopeFactory;
 
             _factory = new ConnectionFactory
             {
@@ -52,10 +60,18 @@ namespace ComicZone.ComicService.BLL.Messaging.Consumers
                     var userCreatedEvent = JsonSerializer.Deserialize<UserCreatedEvent>(message);
                     _logger.LogInformation("Received UserCreatedEvent for user {UserId}", userCreatedEvent.Id);
 
-                    // Викликаємо бізнес-логіку обробки події, наприклад:
-                    // await ProcessUserCreatedAsync(userCreatedEvent);
+                    using var scope = _scopeFactory.CreateScope();
+                    var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                    // крч тут конекшн вже закритий, тому і падає
+                    await uow.CachedUserRepository.AddAsync(new CachedUser
+                    {
+                        Id = userCreatedEvent.Id,
+                        Username = userCreatedEvent.Username,
+                        AvatarUrl = userCreatedEvent.AvatarUrl,
+                        CachedAt = DateTime.UtcNow
+                    });
+                    await uow.CommitAsync();
+
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
