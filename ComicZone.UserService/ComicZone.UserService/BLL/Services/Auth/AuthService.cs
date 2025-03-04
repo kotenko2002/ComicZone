@@ -52,8 +52,7 @@ namespace ComicZone.UserService.BLL.Services.Auth
             {
                 Id = user.Id,
                 Username = user.UserName,
-                AvatarUrl = null, // temp
-                CreatedAt = DateTime.UtcNow
+                AvatarUrl = null // temp
             };
 
             await _userEventPublisher.PublishUserCreatedAsync(userCreatedEvent);

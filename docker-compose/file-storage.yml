@@ -6,8 +6,8 @@ services:
     ports:
       - '9000:9000'
       - '9001:9001'
-    networks:
-      - minionetwork
+    # networks:
+    #   - minionetwork
     volumes:
       - 'minio_data:/data'
     environment:
@@ -15,9 +15,9 @@ services:
       - MINIO_ROOT_PASSWORD=your_pasword
       # - MINIO_DEFAULT_BUCKETS=testbucket
 
-networks:
-  minionetwork:
-    driver: bridge
+# networks:
+#   minionetwork:
+#     driver: bridge
 
 volumes:
   minio_data:
