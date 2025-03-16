@@ -6,9 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<Protobuf Include="PL\Protos\file_storage.proto" GrpcServices="Server" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Minio" Version="6.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PL\Protos\" />
   </ItemGroup>
 
 </Project>

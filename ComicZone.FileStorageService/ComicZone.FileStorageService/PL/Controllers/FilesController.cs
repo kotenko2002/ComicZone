@@ -17,31 +17,12 @@ namespace ComicZone.FileStorageService.PL.Controllers
             _fileStorage = fileStorage;
         }
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("Файл не надано або він порожній.");
-
-            var fileName = await _fileStorage.UploadFile(file);
-            
-            return Ok(new { FileName = fileName });
-        }
-
         [HttpGet("{fileName}")]
         public async Task<IActionResult> GetFile(string fileName)
         {
             var stream = await _fileStorage.GetFile(fileName);
             
             return File(stream, "application/octet-stream", fileName);
-        }
-
-        [HttpDelete("{fileName}")]
-        public async Task<IActionResult> DeleteFile(string fileName)
-        {
-            await _fileStorage.DeleteFile(fileName);
-            
-            return Ok("Файл видалено.");
         }
     }
 }

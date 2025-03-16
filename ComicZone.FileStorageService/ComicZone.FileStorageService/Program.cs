@@ -1,7 +1,7 @@
 
 using ComicZone.FileStorageService.BLL;
-using ComicZone.FileStorageService.DAL;
 using ComicZone.FileStorageService.PL;
+using ComicZone.FileStorageService.PL.Services;
 
 namespace ComicZone.FileStorageService
 {
@@ -12,7 +12,6 @@ namespace ComicZone.FileStorageService
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services
-                .AddDataAccessLayer(builder.Configuration)
                 .AddBusinessLogicLayer(builder.Configuration)
                 .AddPresentationLayer(builder.Configuration);
 
@@ -30,6 +29,7 @@ namespace ComicZone.FileStorageService
 
 
             app.MapControllers();
+            app.MapGrpcService<FileService>();
 
             app.Run();
         }

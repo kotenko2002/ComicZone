@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "ComicZone.FileStorageService";
+
+package filestorage;
+
+service FileStorageService {
+  rpc UploadFile (UploadFileRequest) returns (UploadFileResponse);
+  rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse);
+}
+
+message UploadFileRequest {
+  bytes fileData = 1;
+  string contentType = 2;
+  string originalFileName = 3;
+}
+
+message UploadFileResponse {
+  string fileName = 1;
+}
+
+message DeleteFileRequest {
+  string fileName = 1;
+}
+
+message DeleteFileResponse {
+  string message = 1;
+}

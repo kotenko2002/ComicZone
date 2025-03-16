@@ -11,6 +11,7 @@ namespace ComicZone.FileStorageService.PL
         )
         {
             services.AddControllers();
+            services.AddGrpc();
 
             return services
                .AddHttpContextAccessor()
